@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grading Calibration — ADST / Fine Arts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0f1117;
+    color: #e8e8e8;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0f1117 0%, #141820 60%, #111620 100%);
+    border-bottom: 1px solid #252836;
+    padding: 36px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% -10%, #5b8aff18, transparent);
+    pointer-events: none;
+  }
+  .hero-dept {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: #5b8aff;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px;
+    color: #f0f0f0;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .hero-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  .hero-meta span { color: #888; }
+
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 0;
+  }
+  .hero-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+  }
+  .hp-course  { background: #1e3a5f; color: #7ab3ff; border-color: #2a5080; }
+  .hp-task    { background: #2a2010; color: #ffb74d; border-color: #4a3810; }
+  .hp-focus   { background: #1a2a3a; color: #64b5f6; border-color: #1e4060; }
+
+  /* ── Page layout ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Section blocks ── */
+  .section { margin-top: 32px; }
+  .section-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: #5b8aff;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #252836;
+  }
+
+  /* ── Info box ── */
+  .info-box {
+    background: #161921;
+    border: 1px solid #252836;
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 13.5px;
+    color: #b0b8d0;
+    line-height: 1.7;
+  }
+  .info-box p + p { margin-top: 10px; }
+  .info-box strong { color: #e0e0e0; }
+
+  /* ── Why box ── */
+  .why-box {
+    background: #161921;
+    border: 1px solid #252836;
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .why-box p {
+    font-size: 13.5px;
+    color: #b0b8d0;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .why-bullets { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+  .why-bullets li {
+    font-size: 13px;
+    color: #aaa;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .why-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #5b8aff88;
+    font-size: 11px;
+    top: 3px;
+  }
+  .diagnostic {
+    background: #1a1d26;
+    border-left: 3px solid #5b8aff;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #c0c8e8;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* ── Rubric levels ── */
+  .rubric-grid { display: flex; flex-direction: column; gap: 10px; }
+  .rubric-card {
+    border-radius: 10px;
+    border: 1px solid transparent;
+    overflow: hidden;
+  }
+  .rubric-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .rubric-card-header:hover { filter: brightness(1.05); }
+  .level-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .rubric-card-title { font-size: 14px; font-weight: 600; flex: 1; }
+  .rubric-card-arrow { font-size: 10px; color: #666; transition: transform 0.18s; }
+  .rubric-card.open .rubric-card-arrow { transform: rotate(90deg); }
+  .rubric-card-body {
+    display: none;
+    padding: 0 16px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .rubric-card.open .rubric-card-body { display: block; }
+
+  /* level colours */
+  .lvl-extending  { background: #1a2e1a; border-color: #2a5a2a; }
+  .lvl-extending .rubric-card-header { background: #1e3520; }
+  .lvl-extending .level-badge { background: #2a5a2a; color: #7dcc7d; }
+  .lvl-extending .rubric-card-title { color: #7dcc7d; }
+  .lvl-extending .rubric-card-body { color: #a8c8a8; }
+
+  .lvl-proficient { background: #1a2a3a; border-color: #1e4060; }
+  .lvl-proficient .rubric-card-header { background: #1e3040; }
+  .lvl-proficient .level-badge { background: #1e4060; color: #7ab3ff; }
+  .lvl-proficient .rubric-card-title { color: #7ab3ff; }
+  .lvl-proficient .rubric-card-body { color: #a0b8d8; }
+
+  .lvl-developing { background: #2a2010; border-color: #4a3810; }
+  .lvl-developing .rubric-card-header { background: #302510; }
+  .lvl-developing .level-badge { background: #4a3810; color: #ffb74d; }
+  .lvl-developing .rubric-card-title { color: #ffb74d; }
+  .lvl-developing .rubric-card-body { color: #c8a870; }
+
+  .lvl-emerging   { background: #2a1a1a; border-color: #5a2a2a; }
+  .lvl-emerging .rubric-card-header { background: #301818; }
+  .lvl-emerging .level-badge { background: #5a2a2a; color: #e07070; }
+  .lvl-emerging .rubric-card-title { color: #e07070; }
+  .lvl-emerging .rubric-card-body { color: #c89090; }
+
+  /* ── Student sample cards ── */
+  .sample-card {
+    background: #161921;
+    border: 1px solid #252836;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .sample-header {
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid #252836;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sample-level-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .sample-label {
+    font-size: 13px;
+    color: #666;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .sample-tabs {
+    display: flex;
+    border-bottom: 1px solid #252836;
+  }
+  .sample-tab {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .sample-tab:hover { color: #aaa; }
+  .sample-tab.active { color: #e0e0e0; border-bottom-color: #5b8aff; }
+
+  .sample-pane { display: none; padding: 18px 20px; }
+  .sample-pane.active { display: block; }
+
+  .student-text {
+    font-size: 13.5px;
+    color: #b0b8d0;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .student-quote {
+    background: #1a1d26;
+    border-left: 3px solid #5b8aff44;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #8898bb;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .annotation-body { font-size: 13.5px; color: #b0b8d0; line-height: 1.75; margin-bottom: 16px; }
+
+  .strength-block, .growth-block {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+  .strength-block { background: #1a2e1a; border: 1px solid #2a4a2a; }
+  .growth-block   { background: #1e1e2e; border: 1px solid #2a2a4a; }
+
+  .block-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .strength-block .block-label { color: #5dba7f; }
+  .growth-block   .block-label { color: #9090e0; }
+
+  .anno-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+  .anno-list li {
+    font-size: 12.5px;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .strength-block .anno-list li { color: #8ecf8e; }
+  .strength-block .anno-list li::before { content: '✔'; position: absolute; left: 0; font-size: 10px; top: 2px; color: #5dba7f; }
+  .growth-block   .anno-list li { color: #a0a0d8; }
+  .growth-block   .anno-list li::before { content: '▶'; position: absolute; left: 0; font-size: 9px; top: 3px; color: #7070c0; }
+
+  /* ── Discussion questions ── */
+  .discussion-list { display: flex; flex-direction: column; gap: 10px; }
+  .discussion-item {
+    background: #161921;
+    border: 1px solid #252836;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .discussion-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #5b8aff18;
+    border: 1px solid #5b8aff44;
+    color: #5b8aff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .discussion-text { font-size: 13.5px; color: #b0b8d0; line-height: 1.65; }
+
+  /* ── HOD note ── */
+  .hod-note {
+    background: #1a1d26;
+    border: 1px solid #2a2d3a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 12.5px;
+    color: #777;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .hod-note strong { color: #aaa; font-style: normal; }
+
+  /* ── Nav back ── */
+  .nav-bar {
+    background: #0f1117;
+    border-bottom: 1px solid #1e212c;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-back {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #5b8aff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-back:hover { color: #7fa8ff; }
+  .nav-divider { color: #333; font-size: 12px; }
+  .nav-current { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; }
+
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a class="nav-back" href="/">← Assignments</a>
+  <span class="nav-divider">/</span>
+  <span class="nav-current">Grading Calibration</span>
+</div>
+
+<div class="hero">
+  <div class="hero-dept">ADST / Fine Arts Department</div>
+  <div class="hero-title">Grading Calibration Package</div>
+  <div class="hero-meta">April 24 &amp; May 1, 2026 &nbsp;·&nbsp; <span>Department Development Time</span></div>
+  <div class="hero-pills">
+    <span class="hero-pill hp-course">Computer Programming 12</span>
+    <span class="hero-pill hp-task">KPU Field Work Reflection</span>
+    <span class="hero-pill hp-focus">Calibration Focus: Understanding Context</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Assessment Task -->
+  <div class="section">
+    <div class="section-header">Assessment Task</div>
+    <div class="info-box">
+      <p><strong>Task:</strong> KPU Field Work Reflection &nbsp;·&nbsp; February 9, 2026</p>
+      <p><strong>Standards Assessed:</strong> Understanding Context · Define &amp; Ideate · Prototype &amp; Test · Make · Share</p>
+      <p>Following a field trip to Kwantlen Polytechnic University's Entertainment Arts program, CP 12 students wrote a structured reflection. Students observed a live workshop led by KPU instructor <strong>Mike Hayes</strong> covering 3D modelling (Blender), game engines (Unity, Unreal, GoDot), and industry career paths. They were also asked to provide a quote capturing a key takeaway.</p>
+    </div>
+  </div>
+
+  <!-- Why This Task -->
+  <div class="section">
+    <div class="section-header">Why This Task Assesses Understanding Context</div>
+    <div class="why-box">
+      <p>Understanding Context asks students to use research and empathetic observation to uncover meaningful design opportunities and to identify contextual factors (social, ethical, sustainability) that shape design decisions. A field work reflection is a direct evidence artifact because students must:</p>
+      <ul class="why-bullets">
+        <li>Observe a professional context with curiosity and intent</li>
+        <li>Extract insights about how tools, people, and systems work together</li>
+        <li>Connect what they observed to a broader design or career understanding</li>
+        <li>Recognize social/professional factors — not just technical ones</li>
+      </ul>
+      <div class="diagnostic">
+        Key diagnostic question: <strong>Did the student move from observation to meaning?</strong> A reflection that only describes what happened ("we saw Blender") without extracting insight does not yet demonstrate Understanding Context.
+      </div>
+    </div>
+  </div>
+
+  <!-- Rubric -->
+  <div class="section">
+    <div class="section-header">Rubric — Understanding Context (Grade 12)</div>
+    <div class="rubric-grid">
+
+      <div class="rubric-card lvl-extending" onclick="toggleRubric(this)">
+        <div class="rubric-card-header">
+          <span class="level-badge">Extending</span>
+          <span class="rubric-card-title">Synthesizes, justifies, and evaluates</span>
+          <span class="rubric-card-arrow">▶</span>
+        </div>
+        <div class="rubric-card-body">
+          Synthesizes and justifies research and empathetic observation to understand needs and uncover <strong>exceptionally meaningful</strong> design opportunities, guided by curiosity and compassion. Justifies, and <strong>evaluates decisions of</strong>, design skills, tools, and technologies needed based on social, ethical, and/or sustainability considerations to serve individuals, communities, and/or the environment.
+        </div>
+      </div>
+
+      <div class="rubric-card lvl-proficient" onclick="toggleRubric(this)">
+        <div class="rubric-card-header">
+          <span class="level-badge">Proficient</span>
+          <span class="rubric-card-title">Synthesizes and justifies</span>
+          <span class="rubric-card-arrow">▶</span>
+        </div>
+        <div class="rubric-card-body">
+          Synthesizes and justifies research and empathetic observation to understand needs and uncover <strong>meaningful</strong> design opportunities, guided by curiosity and compassion. Justifies design skills, tools, and technologies needed based on social, ethical, and/or sustainability considerations to serve individuals, communities, and/or the environment.
+        </div>
+      </div>
+
+      <div class="rubric-card lvl-developing" onclick="toggleRubric(this)">
+        <div class="rubric-card-header">
+          <span class="level-badge">Developing</span>
+          <span class="rubric-card-title">Explores and justifies</span>
+          <span class="rubric-card-arrow">▶</span>
+        </div>
+        <div class="rubric-card-body">
+          Explores and justifies research and empathetic observation to understand needs and uncover meaningful design opportunities, guided by curiosity and compassion. <strong>Explains</strong> design skills, tools, and technologies needed based on social, ethical, and/or sustainability considerations to serve individuals, communities, and/or the environment.
+        </div>
+      </div>
+
+      <div class="rubric-card lvl-emerging" onclick="toggleRubric(this)">
+        <div class="rubric-card-header">
+          <span class="level-badge">Emerging</span>
+          <span class="rubric-card-title">Explores and explains</span>
+          <span class="rubric-card-arrow">▶</span>
+        </div>
+        <div class="rubric-card-body">
+          Explores and <strong>explains</strong> research and empathetic observation to understand needs and uncover meaningful design opportunities, guided by curiosity and compassion. <strong>Describes</strong> design skills, tools, and technologies needed based on social, ethical, and/or sustainability considerations to serve individuals, communities, and/or the environment.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Student Samples -->
+  <div class="section">
+    <div class="section-header">Student Work Samples</div>
+    <p style="font-size:12.5px; color:#555; margin-bottom:8px; font-family:'DM Mono',monospace;">Four samples · Same task · Same date · February 9, 2026 · Names removed except where self-identified.</p>
+    <div style="background:#1a1d26; border:1px solid #2a2d3a; border-left: 3px solid #ffb74d; border-radius:0 8px 8px 0; padding:10px 14px; margin-bottom:20px; font-size:12.5px; color:#c9a84c; line-height:1.6;">
+      <strong style="color:#ffb74d;">Before you reveal:</strong> Read each sample and assign your own level first. Use the rubric above as your reference. Click <em>Reveal Annotation</em> only after you've made your call.
+    </div>
+
+    <!-- Extending -->
+    <div class="sample-card">
+      <div class="sample-header">
+        <span class="sample-label">Sample A</span>
+        <span class="sample-label" style="margin-left:auto; color:#444; font-size:10px;">KPU Field Work Reflection · Feb 9, 2026</span>
+      </div>
+      <div class="sample-tabs">
+        <button class="sample-tab active" onclick="switchSample(this, 'ext-work')">Student Work</button>
+        <button class="sample-tab" onclick="switchSample(this, 'ext-anno')">Reveal Annotation</button>
+      </div>
+      <div class="sample-pane active" id="ext-work">
+        <div class="student-text">After going to KPU's Entertainment Arts facility, I was able to view the kind of high-quality projects I might expect to work on should I pursue this path. I recognized that they had to work with a variety of tools, even for just one project. For example, while you might develop your game on Unreal Engine, you might have to make the character models and textures somewhere else, like on Blender. Learning fast will be important, as many companies have different preferences to software/applications.
+
+At KPU, the instructors and professors are experienced, having worked in a multitude of ADST-related careers for well-known companies. One of the main insights they shared was that everyone there has technical skills, but what makes a successful project is teamwork and communication. That's one of the core factors companies use when hiring — whether you're a good fit to collaborate with the existing team. This is especially important when working on large projects with over 500 people. Your main contribution in the scale of the full project is getting your subunit focussed on its purpose and bringing their part to completion.</div>
+        <div class="student-quote">"Every job applicant already has technical skills, but what the employers really want to see is if you're a good fit — a communicator and team player."</div>
+      </div>
+      <div class="sample-pane" id="ext-anno">
+        <div class="annotation-body">This student moves beyond describing the experience to extracting a professional insight with social significance: that teamwork and communication — not technical skill alone — determine success on large-scale projects. The observation about 500-person teams and subunit accountability demonstrates an understanding of how contextual factors (social, collaborative) shape professional design work. The student justifies tool diversity (Unreal + Blender together) as a design reality, not just a curiosity.</div>
+        <div class="strength-block">
+          <div class="block-label">Strengths</div>
+          <ul class="anno-list">
+            <li>Identifies a non-obvious industry insight: soft skills outweigh technical skills</li>
+            <li>Connects observation to broader social/professional context</li>
+            <li>Justifies tool choices as contextually determined</li>
+            <li>Pulls a quote that captures the key idea precisely</li>
+            <li>Writing shows genuine curiosity and empathy toward the professional world</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Proficient -->
+    <div class="sample-card">
+      <div class="sample-header">
+        <span class="sample-label">Sample B</span>
+        <span class="sample-label" style="margin-left:auto; color:#444; font-size:10px;">KPU Field Work Reflection · Feb 9, 2026</span>
+      </div>
+      <div class="sample-tabs">
+        <button class="sample-tab active" onclick="switchSample(this, 'pro-work')">Student Work</button>
+        <button class="sample-tab" onclick="switchSample(this, 'pro-anno')">Reveal Annotation</button>
+      </div>
+      <div class="sample-pane active" id="pro-work">
+        <div class="student-text">The experience at the Richmond Kwantlen Polytechnic University helped me understand better how games are actually made and how different tools work together. I learned that Blender is mainly used to create 3D models, such as rocks, which are then imported into a game engine. There are other engines like Unreal that are commonly used in the industry, and they each have their own strength which depends on the type of game being developed.
+
+Seeing the actual process in person made me think more seriously about my interest in game development. Even though I enjoy learning about the different design tools like Blender, I am more interested in the coding side of game development. Things such as writing scripts, controlling how the game behaves, and solving different problems through code feels more engaging to me rather than creating visuals. This experience helped confirm that this is a field that I am interested in exploring further.</div>
+      </div>
+      <div class="sample-pane" id="pro-anno">
+        <div class="annotation-body">This student synthesizes what they observed — tools work together, engines have context-specific strengths — and connects it to a meaningful personal design insight: clarifying their own orientation toward coding over visual creation. This is not just journaling — it shows the student using observation to understand their fit within a professional design ecosystem. The reflection is focused and purposeful.</div>
+        <div class="strength-block">
+          <div class="block-label">Strengths</div>
+          <ul class="anno-list">
+            <li>Explains how tools relate to each other in a pipeline (Blender → game engine)</li>
+            <li>Identifies that engine choice is context-dependent</li>
+            <li>Uses the experience to clarify own design direction with specificity</li>
+            <li>Writing is clear and organized</li>
+          </ul>
+        </div>
+        <div class="growth-block">
+          <div class="block-label">What would move this to Extending</div>
+          <ul class="anno-list">
+            <li>Contextual factors remain personal rather than extending to social/ethical/sustainability considerations</li>
+            <li>Student describes their own fit but doesn't reflect on who the work serves or broader design impact</li>
+            <li>One more move outward — from "what suits me" to "what does this mean for how design serves others" — would push this to Extending</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developing -->
+    <div class="sample-card">
+      <div class="sample-header">
+        <span class="sample-label">Sample C</span>
+        <span class="sample-label" style="margin-left:auto; color:#444; font-size:10px;">KPU Field Work Reflection · Feb 9, 2026</span>
+      </div>
+      <div class="sample-tabs">
+        <button class="sample-tab active" onclick="switchSample(this, 'dev-work')">Student Work</button>
+        <button class="sample-tab" onclick="switchSample(this, 'dev-anno')">Reveal Annotation</button>
+      </div>
+      <div class="sample-pane active" id="dev-work">
+        <div class="student-text">The experience at KPU taught me lots about the future and helped me realize what I want to do in the future. I wanted to do computer science when I was younger and when I grew older I believed that I would like to create games, but through the lecture that we listened to at KPU I realized that it is not for me. I thought that using blender was hard and even though I really love challenges I found that I did not feel passionate about creating things in blender. I also learned how great these modelling software's are and the amazing things they can create. The features like the Bezier curve are extremely cool as you can really just create whatever you want. The lecture that Mike Hayes taught really stood out to me as he seemed extremely passionate for what he does. Even though the lesson was supposed to be just about blender I learned lots more than just that. He taught us about different game engines like GoDot and Unreal Engine and about the future with AI. I also saw how extremely well developed the facilities at KPU were, as they had tons of really well setup computers. I also saw how a university lecture goes and realized how extremely long and exhausting they are to sit through.</div>
+      </div>
+      <div class="sample-pane" id="dev-anno">
+        <div class="annotation-body">Student reflects honestly and with genuine self-awareness, but the reflection stays in the register of personal reaction rather than design observation. He notices things (Bezier curves are cool, Mike is passionate, facilities are good) but does not extract insight from them. The key move missing is the shift from "I felt X" to "this means Y for how design actually works." All observations are weighted equally — there is no filtering for design significance.</div>
+        <div class="strength-block">
+          <div class="block-label">Strengths</div>
+          <ul class="anno-list">
+            <li>Honest and self-aware about personal fit</li>
+            <li>Notices instructor passion as meaningful</li>
+            <li>Mentions several relevant tools and concepts by name</li>
+            <li>Shows intellectual honesty in saying the experience changed his career thinking</li>
+          </ul>
+        </div>
+        <div class="growth-block">
+          <div class="block-label">What would move this up</div>
+          <ul class="anno-list">
+            <li>No design insight extracted from observations — reactions dominate over professional understanding</li>
+            <li>No connection to how tools/context serve a broader purpose</li>
+            <li>Next step: ask "What did you notice that would change how you'd approach a design project?"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emerging -->
+    <div class="sample-card">
+      <div class="sample-header">
+        <span class="sample-label">Sample D</span>
+        <span class="sample-label" style="margin-left:auto; color:#444; font-size:10px;">KPU Field Work Reflection · Feb 9, 2026</span>
+      </div>
+      <div class="sample-tabs">
+        <button class="sample-tab active" onclick="switchSample(this, 'emg-work')">Student Work</button>
+        <button class="sample-tab" onclick="switchSample(this, 'emg-anno')">Reveal Annotation</button>
+      </div>
+      <div class="sample-pane active" id="emg-work">
+        <div class="student-text">Exploring Kwantlen Polytechnic University the class and I were able to see the innerworkings of a proper post-secondary institution. Experiencing a game development workshop with one of KPU's own instructors was the highlight of the tour. Learning all about rendering, designing, modeling and creating objects for projects/games, it was very interesting and a lot of fun. We even learned about what the Game Development course is like at KPU as well as the kinds of tools KPU and other big tech-companies use. It was a fun experience packed with useful information!</div>
+        <div class="student-quote">"After going through this tour and workshop, my passion for game development has been reignited and I have a new found desire to attend this school."</div>
+        <div class="student-quote">"I want to go to KPU so bad. I think I could really have a future in game development. Taking this workshop has inspired me in so many ways."</div>
+      </div>
+      <div class="sample-pane" id="emg-anno">
+        <div class="annotation-body">This student describes the experience positively and records an emotional response, but the reflection contains no substantive observation or extracted insight. The writing catalogues that things happened ("learning all about rendering, designing, modeling") without unpacking any of them. The quotes are aspirational rather than analytical — they express a desire to attend KPU, not understanding of what was observed. This is a description of enthusiasm, not evidence of Understanding Context.</div>
+        <div class="strength-block">
+          <div class="block-label">Strengths</div>
+          <ul class="anno-list">
+            <li>Positive engagement with the experience</li>
+            <li>Willing to share personal response</li>
+            <li>Identifies the workshop as the highlight, suggesting awareness of what was most valuable</li>
+          </ul>
+        </div>
+        <div class="growth-block">
+          <div class="block-label">What would move this up</div>
+          <ul class="anno-list">
+            <li>No specific observations described in depth</li>
+            <li>No insight extracted — quotes record personal aspiration rather than professional understanding</li>
+            <li>No connection to tools, context, or design thinking</li>
+            <li>Next step: return to the experience and ask "What was one specific thing you saw or heard that surprised you, and what does it mean for how games are made?"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /samples -->
+
+  <!-- Discussion Questions -->
+  <div class="section">
+    <div class="section-header">Part 3 — Calibration Discussion Questions</div>
+    <div class="discussion-list">
+      <div class="discussion-item">
+        <div class="discussion-num">1</div>
+        <div class="discussion-text">The Extending and Proficient samples both show insight — what is the precise difference? Is the Extending student's social observation (teamwork at industry scale) enough to separate them, or is it something else?</div>
+      </div>
+      <div class="discussion-item">
+        <div class="discussion-num">2</div>
+        <div class="discussion-text">The Developing sample is honest and self-aware. Does self-awareness about personal fit count as Understanding Context? Why or why not?</div>
+      </div>
+      <div class="discussion-item">
+        <div class="discussion-num">3</div>
+        <div class="discussion-text">The Emerging sample shows enthusiasm but no depth. Is enthusiasm itself evidence of "curiosity and compassion" as the rubric requires, or does it need to be directed at design insight?</div>
+      </div>
+      <div class="discussion-item">
+        <div class="discussion-num">4</div>
+        <div class="discussion-text">Two students land at different levels (Proficient vs. Developing) even though both concluded "I'm more suited for coding." What distinguishes them?</div>
+      </div>
+      <div class="discussion-item">
+        <div class="discussion-num">5</div>
+        <div class="discussion-text">Is a field work reflection a fair evidence artifact for Understanding Context in a programming course? What are its strengths and limitations compared to a project proposal or design brief?</div>
+      </div>
+      <div class="discussion-item">
+        <div class="discussion-num">6</div>
+        <div class="discussion-text">How do we calibrate consistently when student writing ability affects how much insight is visible on the page?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOD Note -->
+  <div class="section">
+    <div class="hod-note">
+      <strong>Note to HOD:</strong> The four samples above are from the same task, same date, same experience — which makes them unusually clean for calibration. The variation in depth is entirely about design thinking, not task familiarity.
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+function toggleRubric(card) {
+  card.classList.toggle('open');
+}
+
+function switchSample(btn, paneId) {
+  const card = btn.closest('.sample-card');
+  card.querySelectorAll('.sample-tab').forEach(t => t.classList.remove('active'));
+  card.querySelectorAll('.sample-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(paneId).classList.add('active');
+}
+</script>
+</body>
+</html>
