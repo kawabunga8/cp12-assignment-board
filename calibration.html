@@ -348,36 +348,30 @@
   }
   .hod-note strong { color: #aaa; font-style: normal; }
 
-  /* ── Nav back ── */
   .nav-bar {
-    background: #0f1117;
+    background: #0d0f15;
     border-bottom: 1px solid #1e212c;
-    padding: 10px 24px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
   }
-  .nav-back {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #5b8aff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .nav-back:hover { color: #7fa8ff; }
-  .nav-divider { color: #333; font-size: 12px; }
-  .nav-current { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; }
+  .nav-brand { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; letter-spacing: 0.08em; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link { font-family: 'DM Mono', monospace; font-size: 10.5px; color: #666; text-decoration: none; padding: 4px 10px; border-radius: 5px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: #aaa; border-color: #2a2d3a; }
+  .nav-link.active { color: #5b8aff; border-color: #2a3a5a; background: #1a1d26; }
 
 </style>
 </head>
 <body>
 
 <div class="nav-bar">
-  <a class="nav-back" href="/">← Assignments</a>
-  <span class="nav-divider">/</span>
-  <span class="nav-current">Grading Calibration</span>
+  <span class="nav-brand">CP 11/12</span>
+  <div class="nav-links">
+    <a class="nav-link" href="/">Assignments</a>
+    <a class="nav-link active" href="/calibration">Grading Calibration</a>
+  </div>
 </div>
 
 <div class="hero">

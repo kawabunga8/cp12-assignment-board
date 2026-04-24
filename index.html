@@ -17,7 +17,14 @@
     padding: 24px 16px 40px;
   }
 
-  .header { text-align: center; margin-bottom: 32px; }
+  .nav-bar { background: #0d0f15; border-bottom: 1px solid #1e212c; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
+  .nav-brand { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; letter-spacing: 0.08em; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link { font-family: 'DM Mono', monospace; font-size: 10.5px; color: #666; text-decoration: none; padding: 4px 10px; border-radius: 5px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: #aaa; border-color: #2a2d3a; }
+  .nav-link.active { color: #5b8aff; border-color: #2a3a5a; background: #1a1d26; }
+
+  .header { text-align: center; margin-bottom: 32px; margin-top: 24px; }
   .header h1 { font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 0.15em; color: #5b8aff; text-transform: uppercase; margin-bottom: 6px; }
   .header h2 { font-size: 26px; font-weight: 700; color: #f0f0f0; }
 
@@ -168,14 +175,35 @@
   .grade-table tr:last-child td { border-bottom: none; }
 
   .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-  .focus-pill { background: #1a1d26; border: 1px solid #252836; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #c0c8e8; line-height: 1.45; }
-  .focus-pill strong { display: block; font-size: 12px; font-weight: 600; color: #f0f0f0; margin-bottom: 3px; }
+  .focus-pill { background: #1a1d26; border: 1px solid #252836; border-radius: 8px; overflow: hidden; font-size: 12px; color: #c0c8e8; line-height: 1.45; }
+  .focus-pill-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; gap: 8px; }
+  .focus-pill-header:hover { background: #1e2130; }
+  .focus-pill strong { font-size: 12px; font-weight: 600; color: #f0f0f0; display: block; margin-bottom: 2px; }
+  .focus-pill-desc { font-size: 11.5px; color: #666; }
+  .focus-pill-arrow { font-size: 9px; color: #5b8aff88; flex-shrink: 0; transition: transform 0.18s; }
+  .focus-pill.open .focus-pill-arrow { transform: rotate(90deg); }
+  .focus-pill-body { display: none; border-top: 1px solid #252836; padding: 8px 12px 10px; }
+  .focus-pill.open .focus-pill-body { display: block; }
+  .focus-pill-unit-link { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 10px; color: #5b8aff; text-decoration: none; margin-bottom: 8px; }
+  .focus-pill-unit-link:hover { color: #7fa8ff; }
+  .focus-tutorial-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .focus-tutorial-list li a { font-size: 11.5px; color: #888; text-decoration: none; display: flex; align-items: center; gap: 5px; line-height: 1.4; }
+  .focus-tutorial-list li a:hover { color: #bbb; }
+  .focus-tutorial-list li a::before { content: '→'; color: #5b8aff55; font-size: 10px; flex-shrink: 0; }
 
   .divider { border: none; border-top: 1px solid #252836; margin: 18px 0; }
   .note-box { background: #1e3a1e; border: 1px solid #2a5a2a; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #8ecf8e; margin-top: 14px; }
 </style>
 </head>
 <body>
+
+<div class="nav-bar">
+  <span class="nav-brand">CP 11/12</span>
+  <div class="nav-links">
+    <a class="nav-link active" href="/">Assignments</a>
+    <a class="nav-link" href="/calibration">Grading Calibration</a>
+  </div>
+</div>
 
 <div class="header">
   <h1>Computer Programming 11/12</h1>
@@ -232,7 +260,13 @@
     </div>
   </div>
   <div class="card-body">
-    <div class="highlight-box">Practice a professional DevOps workflow using GitHub Online and Unity. This process emphasizes collaboration, relationship, and technical fluency. You will make <strong>one improvement</strong> to a shared codebase and submit it for review.</div>
+    <div class="highlight-box">Practice a professional DevOps workflow using GitHub Online and Unity. This process emphasizes collaboration, relationship, and technical fluency. You will make <strong>one improvement</strong> to a shared codebase and submit it for review.
+      <div style="margin-top:10px;">
+        <a href="https://kawabunga8.itch.io/musicnotegame" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-family:'DM Mono',monospace; font-size:10.5px; color:#5b8aff; text-decoration:none; background:#1a1d26; border:1px solid #2a3a5a; padding:5px 10px; border-radius:6px;">
+          ↗ Play MusicNoteGame on itch.io
+        </a>
+      </div>
+    </div>
     <div class="section-label">Mission Steps</div>
     <div class="step-list">
       <div class="step">
@@ -349,11 +383,101 @@
     <hr class="divider">
     <div class="section-label">Formative Assessment Focus Areas</div>
     <div class="focus-grid">
-      <div class="focus-pill"><strong>Gameplay Mechanics</strong>Movement, physics, forces, responsiveness</div>
-      <div class="focus-pill"><strong>User Interface</strong>HUD elements, feedback, clarity for the player</div>
-      <div class="focus-pill"><strong>Publishing Your Project</strong>Build settings, platform awareness, playable output</div>
-      <div class="focus-pill"><strong>Scene Flow &amp; Data</strong>Scene transitions, variables, persistence</div>
-      <div class="focus-pill" style="grid-column:1/-1"><strong>Object-Oriented Principles</strong>Scripts, components, encapsulation, reusable logic</div>
+
+      <div class="focus-pill" onclick="toggleFocus(this)">
+        <div class="focus-pill-header">
+          <div><strong>Gameplay Mechanics</strong><span class="focus-pill-desc">Movement, physics, forces, responsiveness</span></div>
+          <span class="focus-pill-arrow">▶</span>
+        </div>
+        <div class="focus-pill-body">
+          <a class="focus-pill-unit-link" href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics?version=6.0" target="_blank">↗ Open Unit on Unity Learn</a>
+          <ul class="focus-tutorial-list">
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/lesson-4-1-watch-where-you-re-going-2?version=6.0" target="_blank">Lesson 4.1 – Watch Where You're Going</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/lesson-plan-4-2-follow-the-player?version=6.0" target="_blank">Lesson 4.2 – Follow the Player</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/lesson-4-3-powerup-and-countdown?version=6.0" target="_blank">Lesson 4.3 – PowerUp and CountDown</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/lesson-4-4-for-loops-for-waves?version=6.0" target="_blank">Lesson 4.4 – For-Loops For Waves</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/challenge-4-soccer-scripting-1?version=6.0" target="_blank">Challenge 4 – Soccer Scripting</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/tutorial/lab-4-basic-gameplay?version=6.0" target="_blank">Lab 4 – Basic Gameplay</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/gameplay-mechanics/quiz/quiz-4-rg?version=6.0" target="_blank">Quiz 4</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="focus-pill" onclick="toggleFocus(this)">
+        <div class="focus-pill-header">
+          <div><strong>User Interface</strong><span class="focus-pill-desc">HUD elements, feedback, clarity for the player</span></div>
+          <span class="focus-pill-arrow">▶</span>
+        </div>
+        <div class="focus-pill-body">
+          <a class="focus-pill-unit-link" href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface?version=6.0" target="_blank">↗ Open Unit on Unity Learn</a>
+          <ul class="focus-tutorial-list">
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/lesson-5-1-clicky-mouse-1?version=6.0" target="_blank">Lesson 5.1 – Clicky Mouse</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/lesson-5-2-keeping-score?version=6.0" target="_blank">Lesson 5.2 – Keeping Score</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/lesson-5-3-game-over-2?version=6.0" target="_blank">Lesson 5.3 – Game Over</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/lesson-5-4-what-s-the-difficulty-2?version=6.0" target="_blank">Lesson 5.4 – What's the Difficulty?</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/challenge-5-whack-a-food?version=6.0" target="_blank">Challenge 5 – Whack-a-Food</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/tutorial/lab-5-swap-out-your-assets?version=6.0" target="_blank">Lab 5 – Swap out your Assets</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/user-interface/quiz/quiz-5-5o?version=6.0" target="_blank">Quiz 5</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="focus-pill" onclick="toggleFocus(this)">
+        <div class="focus-pill-header">
+          <div><strong>Publishing Your Project</strong><span class="focus-pill-desc">Build settings, platform awareness, playable output</span></div>
+          <span class="focus-pill-arrow">▶</span>
+        </div>
+        <div class="focus-pill-body">
+          <a class="focus-pill-unit-link" href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project?version=6.0" target="_blank">↗ Open Unit on Unity Learn</a>
+          <ul class="focus-tutorial-list">
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project/tutorial/lesson-6-1-project-optimization-1?version=6.0" target="_blank">Lesson 6.1 – Project Optimization</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project/tutorial/lesson-6-2-research-and-troubleshooting-2?version=6.0" target="_blank">Lesson 6.2 – Research and Troubleshooting</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project/tutorial/lesson-6-3-sharing-your-projects?version=6.0" target="_blank">Lesson 6.3 – Sharing your Projects</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project/tutorial/debug-the-app?version=6.0" target="_blank">Exercise – Debug the App</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/publishing-your-project/quiz/quiz-create-with-code-2?version=6.0" target="_blank">Quiz: Create with Code 2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="focus-pill" onclick="toggleFocus(this)">
+        <div class="focus-pill-header">
+          <div><strong>Scene Flow &amp; Data</strong><span class="focus-pill-desc">Scene transitions, variables, persistence</span></div>
+          <span class="focus-pill-arrow">▶</span>
+        </div>
+        <div class="focus-pill-body">
+          <a class="focus-pill-unit-link" href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data?version=6.0" target="_blank">↗ Open Unit on Unity Learn</a>
+          <ul class="focus-tutorial-list">
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/introduction-to-real-time-3d-experience-design?version=6.0" target="_blank">Introduction to real-time 3D experience design</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/set-up-version-control?version=6.0" target="_blank">Set up version control</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/explore-the-sample-project?version=6.0" target="_blank">Explore the sample project</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/principles-of-object-oriented-programming?version=6.0" target="_blank">Principles of object-oriented programming</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/create-a-scene-flow?version=6.0" target="_blank">Create a scene flow</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/implement-data-persistence-between-scenes?version=6.0" target="_blank">Implement data persistence between scenes</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/implement-data-persistence-between-sessions?version=6.0" target="_blank">Implement data persistence between sessions</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/tutorial/submission-data-persistence-in-a-new-repo?version=6.0" target="_blank">Submission: Data persistence in a new repo</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/manage-scene-flow-and-data/quiz/quiz-manage-scene-flow-and-data?version=6.0" target="_blank">Quiz: Manage scene flow and data</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="focus-pill" style="grid-column:1/-1" onclick="toggleFocus(this)">
+        <div class="focus-pill-header">
+          <div><strong>Object-Oriented Principles</strong><span class="focus-pill-desc">Scripts, components, encapsulation, reusable logic</span></div>
+          <span class="focus-pill-arrow">▶</span>
+        </div>
+        <div class="focus-pill-body">
+          <a class="focus-pill-unit-link" href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles?version=6.0" target="_blank">↗ Open Unit on Unity Learn</a>
+          <ul class="focus-tutorial-list">
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/tutorial/abstraction-in-object-oriented-programming-2?version=6.0" target="_blank">Abstraction in object-oriented programming</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/tutorial/inheritance-and-polymorphism-in-object-oriented-programming-1?version=6.0" target="_blank">Inheritance and polymorphism</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/tutorial/encapsulation-in-object-oriented-programming-2?version=6.0" target="_blank">Encapsulation in object-oriented programming</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/tutorial/profile-code-to-identify-issues-2?version=6.0" target="_blank">Profile code to identify issues</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/quiz/quiz-apply-object-oriented-principles?version=6.0" target="_blank">Quiz: Apply object-oriented principles</a></li>
+            <li><a href="https://learn.unity.com/pathway/junior-programmer/unit/apply-object-oriented-principles/tutorial/submission-programming-theory-in-action?version=6.0" target="_blank">Submission: Programming theory in action</a></li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -527,6 +651,9 @@ function toggleDetail(btn) {
   var detail = btn.nextElementSibling;
   var isOpen = detail.classList.toggle('open');
   btn.classList.toggle('open', isOpen);
+}
+function toggleFocus(pill) {
+  pill.classList.toggle('open');
 }
 </script>
 </body>
