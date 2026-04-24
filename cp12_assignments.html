@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CP 11/12 Assignments</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0f1117;
+    color: #e8e8e8;
+    min-height: 100vh;
+    padding: 24px 16px 40px;
+  }
+
+  .header { text-align: center; margin-bottom: 32px; }
+  .header h1 { font-size: 13px; font-family: 'DM Mono', monospace; letter-spacing: 0.15em; color: #5b8aff; text-transform: uppercase; margin-bottom: 6px; }
+  .header h2 { font-size: 26px; font-weight: 700; color: #f0f0f0; }
+
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 20px; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { flex-shrink: 0; background: #1a1d26; border: 1px solid #2a2d3a; color: #888; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 6px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+  .tab-btn:hover { color: #ccc; border-color: #444; }
+  .tab-btn.active { background: #5b8aff; border-color: #5b8aff; color: #fff; }
+
+  .card { display: none; background: #161921; border: 1px solid #252836; border-radius: 12px; overflow: hidden; animation: fadeIn 0.2s ease; }
+  .card.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .card-header { padding: 20px 22px 16px; border-bottom: 1px solid #252836; display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+  .badge { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; margin-top: 2px; }
+  .badge.collab { background: #1e3a5f; color: #7ab3ff; border: 1px solid #2a5080; }
+  .badge.formative { background: #1e3d2a; color: #5dba7f; border: 1px solid #2a5a3a; }
+  .badge.summative { background: #3d1e1e; color: #e07070; border: 1px solid #5a2a2a; }
+  .badge.reflection { background: #2e2a1a; color: #c9a84c; border: 1px solid #4a3f1f; }
+
+  .card-title-group { flex: 1; min-width: 180px; }
+  .card-title { font-size: 18px; font-weight: 700; color: #f0f0f0; margin-bottom: 4px; }
+  .card-due { font-family: 'DM Mono', monospace; font-size: 11px; color: #666; }
+  .card-due span { color: #aaa; }
+  .card-body { padding: 20px 22px; }
+
+  /* Standards pills in header */
+  .standards-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  .std-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    cursor: default;
+    border: 1px solid transparent;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .std-pill:hover .std-tooltip { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+  /* Standard colour coding */
+  .std-uc  { background: #1a2a3a; color: #64b5f6; border-color: #1e4060; }
+  .std-di  { background: #1a2a1a; color: #81c784; border-color: #1e4a1e; }
+  .std-pt  { background: #2a1a2a; color: #ce93d8; border-color: #4a1e4a; }
+  .std-mk  { background: #2a2010; color: #ffb74d; border-color: #4a3810; }
+  .std-sh  { background: #1a2a2a; color: #4dd0e1; border-color: #1e4a4a; }
+
+  /* Tooltip */
+  .std-tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #1e2130;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: #ccc;
+    width: 200px;
+    line-height: 1.45;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 100;
+    white-space: normal;
+  }
+
+  /* Standards legend section */
+  .standards-section {
+    background: #0f1117;
+    border: 1px solid #252836;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .standards-section h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #5b8aff;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .std-legend { display: flex; flex-direction: column; gap: 8px; }
+  .std-legend-item { display: flex; align-items: flex-start; gap: 10px; }
+  .std-legend-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .std-legend-desc { font-size: 12px; color: #888; line-height: 1.5; }
+  .std-legend-desc strong { color: #ccc; font-weight: 600; }
+
+  .highlight-box { background: #1a1d26; border-left: 3px solid #5b8aff; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 18px; font-size: 13.5px; color: #c0c8e8; line-height: 1.6; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #5b8aff; text-transform: uppercase; margin-bottom: 10px; margin-top: 18px; }
+
+  .step-list { display: flex; flex-direction: column; gap: 10px; }
+  .step { display: flex; gap: 12px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: #5b8aff22; border: 1px solid #5b8aff55; color: #5b8aff; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .step-content { flex: 1; }
+  .step-title { font-size: 13.5px; font-weight: 600; color: #e8e8e8; margin-bottom: 3px; }
+  .step-desc { font-size: 12.5px; color: #888; line-height: 1.55; }
+  .step-desc code { font-family: 'DM Mono', monospace; background: #252836; padding: 1px 5px; border-radius: 3px; font-size: 11.5px; color: #a8c4ff; }
+
+  .step-detail { margin-top: 8px; display: none; }
+  .step-detail.open { display: block; }
+  .step-detail ul { list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 5px; }
+  .step-detail ul li { font-size: 12px; color: #888; padding-left: 14px; position: relative; line-height: 1.5; }
+  .step-detail ul li::before { content: '→'; position: absolute; left: 0; color: #5b8aff88; font-size: 11px; }
+  .step-detail ul li code { font-family: 'DM Mono', monospace; background: #252836; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #a8c4ff; }
+
+  .expand-btn { margin-top: 5px; font-size: 11px; color: #5b8aff; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; display: flex; align-items: center; gap: 4px; }
+  .expand-btn:hover { color: #7fa8ff; }
+  .expand-btn .arrow { font-size: 9px; transition: transform 0.18s; display: inline-block; }
+  .expand-btn.open .arrow { transform: rotate(90deg); }
+
+  .item-list { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+  .item-list li { font-size: 13px; color: #aaa; list-style: none; padding-left: 16px; position: relative; line-height: 1.5; }
+  .item-list li::before { content: '▸'; position: absolute; left: 0; color: #5b8aff88; font-size: 10px; top: 3px; }
+
+  .trouble-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .trouble-table tr { border-bottom: 1px solid #252836; }
+  .trouble-table tr:last-child { border-bottom: none; }
+  .trouble-table td { padding: 9px 8px; font-size: 12px; vertical-align: top; }
+  .trouble-table td:first-child { color: #e07070; font-family: 'DM Mono', monospace; font-size: 11px; width: 38%; padding-right: 14px; }
+  .trouble-table td:last-child { color: #999; }
+
+  .grade-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .grade-table th { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #5b8aff; text-transform: uppercase; padding: 6px 10px; text-align: left; border-bottom: 1px solid #252836; }
+  .grade-table td { padding: 9px 10px; font-size: 12.5px; color: #aaa; border-bottom: 1px solid #1e212c; vertical-align: top; line-height: 1.5; }
+  .grade-table td:first-child { font-weight: 600; color: #d0d0d0; width: 35%; }
+  .grade-table tr:last-child td { border-bottom: none; }
+
+  .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+  .focus-pill { background: #1a1d26; border: 1px solid #252836; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #c0c8e8; line-height: 1.45; }
+  .focus-pill strong { display: block; font-size: 12px; font-weight: 600; color: #f0f0f0; margin-bottom: 3px; }
+
+  .divider { border: none; border-top: 1px solid #252836; margin: 18px 0; }
+  .note-box { background: #1e3a1e; border: 1px solid #2a5a2a; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #8ecf8e; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Computer Programming 11/12</h1>
+  <h2>Assignments</h2>
+</div>
+
+<!-- Standards Legend -->
+<div class="standards-section">
+  <h3>ADST Grade 12 Learning Standards</h3>
+  <div class="std-legend">
+    <div class="std-legend-item">
+      <span class="std-legend-pill std-uc">Understanding Context</span>
+      <div class="std-legend-desc"><strong>UC</strong> — Research needs, identify design opportunities, justify tools based on social, ethical, and sustainability considerations.</div>
+    </div>
+    <div class="std-legend-item">
+      <span class="std-legend-pill std-di">Define &amp; Ideate</span>
+      <div class="std-legend-desc"><strong>DI</strong> — Generate feasible design ideas, take creative risks, and justify design intent and impact.</div>
+    </div>
+    <div class="std-legend-item">
+      <span class="std-legend-pill std-pt">Prototype &amp; Test</span>
+      <div class="std-legend-desc"><strong>PT</strong> — Build a production plan, prototype, then evaluate tests and feedback to refine or abandon designs.</div>
+    </div>
+    <div class="std-legend-item">
+      <span class="std-legend-pill std-mk">Make</span>
+      <div class="std-legend-desc"><strong>MK</strong> — Follow and adapt a plan independently, select appropriate tools and materials, demonstrate technical skill.</div>
+    </div>
+    <div class="std-legend-item">
+      <span class="std-legend-pill std-sh">Share</span>
+      <div class="std-legend-desc"><strong>SH</strong> — Present the product with rationale, evaluate its impact, and use accurate terminology for an intended audience.</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('collab', this)">MusicNoteGame</button>
+  <button class="tab-btn" onclick="switchTab('jp3', this)">JP Pathway 3</button>
+  <button class="tab-btn" onclick="switchTab('kwantlen', this)">Kwantlen Reflection</button>
+  <button class="tab-btn" onclick="switchTab('lab2', this)">Lab 2 – Summative</button>
+  <button class="tab-btn" onclick="switchTab('u2form', this)">Unit 2 – Formative</button>
+</div>
+
+<!-- MusicNoteGame -->
+<div class="card active" id="tab-collab">
+  <div class="card-header">
+    <div class="badge collab">Collaboration</div>
+    <div class="card-title-group">
+      <div class="card-title">MusicNoteGame</div>
+      <div class="card-due">GitHub DevOps Workflow</div>
+    </div>
+    <div class="standards-row">
+      <span class="std-pill std-pt">Prototype &amp; Test<span class="std-tooltip">Making a change on a branch, testing in Unity, and iterating before submitting the PR is a direct prototype-and-test loop.</span></span>
+      <span class="std-pill std-mk">Make<span class="std-tooltip">Independently editing a script, committing, downloading, and verifying in Unity demonstrates technical execution with real tools.</span></span>
+      <span class="std-pill std-sh">Share<span class="std-tooltip">The Pull Request is the share artifact: a professional title, description of what was changed, and how it was verified.</span></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="highlight-box">Practice a professional DevOps workflow using GitHub Online and Unity. This process emphasizes collaboration, relationship, and technical fluency. You will make <strong>one improvement</strong> to a shared codebase and submit it for review.</div>
+    <div class="section-label">Mission Steps</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Fork the Repo — Your Cloud Copy</div>
+          <div class="step-desc">Open <code>github.com/RCSCP12/MusicNoteGame</code> and click <strong>Fork</strong> (top-right).</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>Check the URL: it must say <code>github.com/YOUR-USERNAME/MusicNoteGame</code></li>
+            <li>If it still says <code>RCSCP12</code>, you are on the teacher's copy and cannot save changes!</li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Create a Feature Branch — Your Sandbox</div>
+          <div class="step-desc">Always work on a branch so the "Main" version stays safe if something breaks.</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>Click the button that says <code>main</code> (top-left of the file list)</li>
+            <li>Type a descriptive name, e.g. <code>update-menu-colors</code> or <code>fix-scoring-logic</code></li>
+            <li>Click <strong>Create branch: [your-branch-name]</strong></li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Edit &amp; Commit — Saving Online</div>
+          <div class="step-desc">Navigate to the script you want to change, click the pencil icon, make your edit, then commit.</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>Navigate to e.g. <code>Assets/Scripts/MenuManager.cs</code></li>
+            <li>Click the <strong>Pencil Icon</strong> (top-right) to open the web editor</li>
+            <li>Make your ONE change</li>
+            <li>Click the green <strong>Commit changes</strong> button</li>
+            <li>Type a short note about what you did, then click <strong>Commit</strong> again</li>
+            <li>If you don't commit, your work isn't saved!</li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Test in Unity — The Reality Check</div>
+          <div class="step-desc">Download a fresh ZIP from your branch and open it in Unity 6 (<code>6000.3.3f1</code>).</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>Delete any old MusicNoteGame folders from your computer first</li>
+            <li>Click the green <strong>&lt;&gt; Code</strong> button → <strong>Download ZIP</strong></li>
+            <li>Unzip the folder to your desktop</li>
+            <li>Open Unity Hub → <strong>Add &gt; Add project from disk</strong> → select the unzipped folder</li>
+            <li>Press <strong>Play</strong> and verify your change works</li>
+            <li>If it doesn't work, return to Step 3, fix it, and download a new ZIP</li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Submit a Pull Request</div>
+          <div class="step-desc">On your GitHub page, click <strong>Compare &amp; pull request</strong> and fill in the details.</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li><strong>Title:</strong> Use a professional name, e.g. <code>Feature: Added High Score Tracker</code></li>
+            <li><strong>Description:</strong> Explain what you changed and how you verified it in Unity</li>
+            <li>Click <strong>Create pull request</strong></li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="section-label">🛠 Troubleshooting</div>
+    <table class="trouble-table">
+      <tr><td>"I don't see my changes in Unity."</td><td>You likely opened an old version. Delete all local copies, download a fresh ZIP from your branch, and re-open in Unity Hub.</td></tr>
+      <tr><td>"Everything is pink or missing."</td><td>Wrong Unity version. Make sure you are using Unity 6 (6000.3.3f1).</td></tr>
+      <tr><td>"I can't find the Commit button."</td><td>You need to type an actual change in the editor first — the button stays hidden until a modification is made.</td></tr>
+      <tr><td>"My PR was rejected."</td><td>Check the teacher's comments! Return to Step 3, fix the issue, and update your branch.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- JP Pathway 3 -->
+<div class="card" id="tab-jp3">
+  <div class="card-header">
+    <div class="badge formative">Formative</div>
+    <div class="card-title-group">
+      <div class="card-title">Unity Junior Programmer Pathway 3</div>
+      <div class="card-due">Due <span>20 February 2026 — 15:00</span></div>
+    </div>
+    <div class="standards-row">
+      <span class="std-pill std-mk">Make<span class="std-tooltip">Completing the gameplay tutorials and lab builds core technical skills: physics, forces, particles, and sound.</span></span>
+      <span class="std-pill std-sh">Share<span class="std-tooltip">The Publishing focus area explicitly addresses building and delivering a playable output for an audience.</span></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="highlight-box">Unit 3: Gameplay Programming. Complete tutorials, a lab, and a quiz. Evidence from this work will assess progress toward ADST 11–12 learning standards.</div>
+    <div class="section-label">Required Tutorials</div>
+    <ul class="item-list">
+      <li>Lesson 3.1 – Jump Force</li>
+      <li>Lesson 3.2 – Make the World Whiz By</li>
+      <li>Lesson 3.3 – Don't Just Stand There</li>
+      <li>Lesson 3.4 – Particles and Sound Effects</li>
+    </ul>
+    <div class="section-label">Challenge &amp; Lab</div>
+    <ul class="item-list">
+      <li>Challenge 3 – Balloons, Bombs, &amp; Booleans</li>
+      <li>Lab 3 – Player Control</li>
+    </ul>
+    <div class="section-label">Assessment Check</div>
+    <ul class="item-list"><li>Quiz 3</li></ul>
+    <hr class="divider">
+    <div class="section-label">Formative Assessment Focus Areas</div>
+    <div class="focus-grid">
+      <div class="focus-pill"><strong>Gameplay Mechanics</strong>Movement, physics, forces, responsiveness</div>
+      <div class="focus-pill"><strong>User Interface</strong>HUD elements, feedback, clarity for the player</div>
+      <div class="focus-pill"><strong>Publishing Your Project</strong>Build settings, platform awareness, playable output</div>
+      <div class="focus-pill"><strong>Scene Flow &amp; Data</strong>Scene transitions, variables, persistence</div>
+      <div class="focus-pill" style="grid-column:1/-1"><strong>Object-Oriented Principles</strong>Scripts, components, encapsulation, reusable logic</div>
+    </div>
+  </div>
+</div>
+
+<!-- Kwantlen -->
+<div class="card" id="tab-kwantlen">
+  <div class="card-header">
+    <div class="badge reflection">Reflection</div>
+    <div class="card-title-group">
+      <div class="card-title">Kwantlen Reflection and Quote</div>
+      <div class="card-due">Due <span>10 February 2026 — 23:59</span></div>
+    </div>
+    <div class="standards-row">
+      <span class="std-pill std-uc">Understanding Context<span class="std-tooltip">Observing a real-world environment and reflecting on what you saw and learned connects directly to empathetic research and identifying design opportunities.</span></span>
+      <span class="std-pill std-sh">Share<span class="std-tooltip">The newsletter quote is a public-facing share of your experience, communicating to an intended audience using your own voice.</span></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="highlight-box">Reflect on your fieldwork visit to Kwantlen and produce a short written piece that could appear in the RCS newsletter.</div>
+    <div class="section-label">Part 1 — Reflection</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Create a new page in ClassNotebook</div>
+          <div class="step-desc">Write a paragraph or two: what did you see, learn, and think about during the fieldwork?</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-label" style="margin-top:16px;">Part 2 — Newsletter Quote</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Write a quote</div>
+          <div class="step-desc">Write several sentences as if you are being quoted — something that could appear in the RCS newsletter about the experience.</div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box">No points assigned. Submit via ClassNotebook.</div>
+  </div>
+</div>
+
+<!-- Lab 2 Summative -->
+<div class="card" id="tab-lab2">
+  <div class="card-header">
+    <div class="badge summative">Summative</div>
+    <div class="card-title-group">
+      <div class="card-title">Lab 2 – Project Primitive</div>
+      <div class="card-due">Due <span>30 January 2026 — 15:00</span> · Setting the Scene</div>
+    </div>
+    <div class="standards-row">
+      <span class="std-pill std-di">Define &amp; Ideate<span class="std-tooltip">Translating your Lab 1 MVP sketch into 3D means making active design decisions about player, enemies, environment, and camera — design thinking in action.</span></span>
+      <span class="std-pill std-pt">Prototype &amp; Test<span class="std-tooltip">Building a greybox specifically to test layout and scale before committing to final visuals is the core purpose of prototyping. The video submission is evidence of testing.</span></span>
+      <span class="std-pill std-mk">Make<span class="std-tooltip">Building with primitives, applying materials, setting the camera, and saving a Unity package all demonstrate technical execution and independent production skills.</span></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="highlight-box">Turn your Lab 1 sketch into a 3D greybox prototype in Unity using simple shapes. Test layout and scale before adding graphics. This lab is about working smart, not looking polished.</div>
+    <div class="section-label">Steps</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Review Your Plan</div>
+          <div class="step-desc">Look at the MVP Sketch from Lab 1 before you start building.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Build with Primitives</div>
+          <div class="step-desc">Use Unity primitive shapes to represent player, enemies, obstacles, and environment. No detailed models.</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>Available shapes: <code>Cube</code>, <code>Sphere</code>, <code>Capsule</code>, <code>Plane</code></li>
+            <li>Represent: player, enemies, obstacles, environment</li>
+            <li>Do not import detailed models at this stage</li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Apply Colors (Materials)</div>
+          <div class="step-desc">Give objects distinct colors so they are easy to identify — e.g., player = blue, enemies = red, ground = green.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Set the Camera</div>
+          <div class="step-desc">Position the Main Camera to match your game type: top-down, side-view, or third-person.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Check Layout</div>
+          <div class="step-desc">Confirm all key elements from your Lab 1 sketch are present and readable in the scene.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Save Your Scene</div>
+          <div class="step-desc">Export a Unity package and save it with your name and version number.</div>
+          <button class="expand-btn" onclick="toggleDetail(this)"><span class="arrow">▶</span> Details</button>
+          <div class="step-detail"><ul>
+            <li>In Project window, right-click <code>Assets</code> → <strong>Export Package</strong></li>
+            <li>Click <strong>Export</strong></li>
+            <li>Create a <code>Backups</code> folder in your Personal Project folder</li>
+            <li>Save with your name and version, e.g. <code>Carl_V0.1.unitypackage</code></li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="section-label">Deliverable</div>
+    <ul class="item-list">
+      <li>Short video showing the scene and camera view</li>
+      <li>Must clearly show: primitive shapes, coloured materials, correct camera view</li>
+    </ul>
+    <hr class="divider">
+    <div class="section-label">Grading Criteria</div>
+    <table class="grade-table">
+      <tr><th>Category</th><th>Proficient (Target)</th></tr>
+      <tr><td>Prototyping Strategy</td><td>Uses simple primitives to test layout without focusing on final visuals.</td></tr>
+      <tr><td>Technical Skills</td><td>Objects are clearly coloured and the camera is correctly positioned.</td></tr>
+      <tr><td>Design Implementation</td><td>The 3D scene accurately reflects the Lab 1 sketch and design intent.</td></tr>
+    </table>
+    <div style="margin-top:10px; font-size:11.5px; color:#666; font-style:italic; padding:0 10px;">Extending: Design is refined after viewing it in 3D, with clear justification. &nbsp;·&nbsp; Developing/Emerging: Scene is unclear, incomplete, or overly focused on visuals.</div>
+  </div>
+</div>
+
+<!-- Unit 2 Formative -->
+<div class="card" id="tab-u2form">
+  <div class="card-header">
+    <div class="badge formative">Formative</div>
+    <div class="card-title-group">
+      <div class="card-title">Unit 2 – Formative</div>
+      <div class="card-due">Due <span>22 January 2026 — 15:00</span></div>
+    </div>
+    <div class="standards-row">
+      <span class="std-pill std-di">Define &amp; Ideate<span class="std-tooltip">Exploring Unity's tools through guided tutorials and Mod the Cube encourages creative risk-taking and early design thinking within constraints.</span></span>
+      <span class="std-pill std-mk">Make<span class="std-tooltip">Working through Lessons 2.1–2.4 and Challenge 2 builds foundational technical skills for following a plan and selecting appropriate tools.</span></span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="highlight-box">Complete all Unit 2 tutorials, challenges, and quizzes. The Lab 2 summative is submitted separately.</div>
+    <div class="section-label">Complete All</div>
+    <ul class="item-list">
+      <li>Lessons 2.1 to 2.4</li>
+      <li>Challenge 2</li>
+      <li>Mod the Cube</li>
+      <li>Quiz 2</li>
+      <li>Quiz: Create with Code 1</li>
+    </ul>
+    <div class="note-box" style="margin-top:16px;"><strong>Lab 2 – Summative</strong> (Project Primitive) is a separate assignment. See the Lab 2 tab for details.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+function toggleDetail(btn) {
+  var detail = btn.nextElementSibling;
+  var isOpen = detail.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+}
+</script>
+</body>
+</html>
